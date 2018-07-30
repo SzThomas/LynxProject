@@ -1,0 +1,113 @@
+﻿@model List<LynxProject.Core.User>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<center>
+    <h2>
+        List of users
+    </h2>
+</center>
+
+    <input type="button" value="Create new user" class="btn btn-info" onclick="location.href='@Url.Action("Create", "User")'" />
+    <input type="text" id="Search" placeholder="Search" class="btn-outline" />
+
+<div class="table">
+    <table id="users">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>E-mail</th>
+                @*<th>Password</th>*@
+                <th>Phone Number</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tfoot><tr><td colspan="8"></tr></tfoot>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                var style = (user.Id % 2 == 0) ? "alt" : "";
+
+                <tr class="style">
+                    <td>@user.Id</td>
+                    <td>@user.Username</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.Email</td>
+                    @*<td>@user.Password</td>*@
+                    <td>@user.PhoneNumber</td>
+                    <td>@Html.ActionLink("Edit", "Edit", "User", new { id = user.Id }, null)</td>
+                    <td class="delete">@Html.ActionLink("Delete", "Delete", "User", new { id = user.Id }, null)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+        #users {
+            font-family: Arial;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #users td, #users th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #users tr:nth-child(even) {
+            background-color: lightgrey;
+        }
+
+        #users th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: dimgrey;
+            color: white;
+        }
+</style>
+
+<script type="text/javascript">
+    $(".delete").click(function (event) {
+        var url = '@Url.Action("Delete", "User")';
+        var tableRow = $(this).closest('tr');
+        $.ajax({
+            url: url + "/" + event.target.id,
+            method: "POST",
+            success: function (deleteResult) {
+                if (deleteResult.toLowerCase() == "true") {
+                    tableRow.find('td').fadeOut('fast', function () { tableRow.remove(); });
+                } else {
+                    alert("Fail");
+                }
+            }
+        })
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#Search").on("keyup", function () {
+            var searchText = $("#Search").val().toLowerCase();
+            $(".style").each(function () {
+                if (!Contains($(this).text().toLowerCase(), searchText)) {
+                    $(this).hide();
+                }
+                else {
+                    $(this).show();
+                }
+            });
+        });
+    });
+</script>
+
+

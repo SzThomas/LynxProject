@@ -1,0 +1,197 @@
+﻿@model LynxProject.Models.UserModel
+
+@{
+    ViewBag.Title = @ViewBag.Title;
+}
+
+@Scripts.Render("~/bundles.user")
+
+<!DOCTYPE html>
+<h2>@ViewBag.Title</h2>
+<style>
+    .error-message {
+        color: red;
+        display: none;
+    }
+</style>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+
+</head>
+
+<body>
+    <div> 
+        @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            @Html.ValidationSummary(false)
+            @Html.HiddenFor(tm =>tm.Id)
+            <div class="form-group">
+                <div class="col-sm-4 control-label">
+                    @Html.LabelFor(tm => tm.Username)
+                </div>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(tm => tm.Username, new { @class = "form-control" }) 
+                    <label class="error-message" id="errorMessageForUserName">
+                        Username must be at least 4 characters long.
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4 control-label">
+                    @Html.LabelFor(tm => tm.FirstName)
+                </div>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(tm => tm.FirstName, new { @class = "form-control" })
+                    <label class="error-message" id="errorMessageForFirstName">
+                        First Name must be at least 4 characters long.
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4 control-label">
+                    @Html.LabelFor(tm => tm.LastName)
+                </div>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(tm => tm.LastName, new { @class = "form-control" })
+                    <label class="error-message" id="errorMessageForLastName">
+                        Last Name must be at least 4 characters long.
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4 control-label">
+                    @Html.LabelFor(tm => tm.Email)
+                </div>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(tm => tm.Email, new { @class = "form-control" })
+                    <label class="error-message" id="errorMessageForEmail">
+                        Valid email required.
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4 control-label">
+                    @Html.LabelFor(tm => tm.Password)
+                </div>
+                <div class="col-sm-4">
+                    @Html.PasswordFor(tm => tm.Password, new { @class = "form-control" })
+                    <label class="error-message" id="errorMessageForPassword">
+                        Password must be at least 8 characters long.
+                    </label>
+                </div> 
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4 control-label">
+                    @Html.LabelFor(tm => tm.PhoneNumber)
+                </div>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(tm => tm.PhoneNumber, new { @class = "form-control" })
+                    <label class="error-message" id="errorMessageForPhoneNumber">
+                        Not a valid phone number.
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <button disabled type="submit" id="btn_Save_Create" class="btn btn-primary">Save</button>
+                    <button type="button" id="btn_Cancel_Create" class="btn btn-primary" onclick="cancelTaskCreate()">Cancel</button>
+                </div>               
+            </div>
+        }
+    </div>
+    <script type="text/javascript">
+        function cancelTaskCreate() {
+            window.location.href = '/User/Index';
+        }
+
+        $("#Username").focusout(function () {
+            var username = $(this).val();
+            if (username.length <= 3) {
+                $("#errorMessageForUserName").show();
+            }
+            validate();
+        });
+        $("#Username").focus(function () {
+            $("#errorMessageForUserName").hide();
+        });
+
+        $("#FirstName").focusout(function () {
+            var firstName = $(this).val();
+            if (firstName.length <= 3) {
+                $("#errorMessageForFirstName").show();
+            }
+            validate();
+        });
+        $("#FirstName").focus(function () {
+            $("#errorMessageForFirstName").hide();
+        });
+
+        $("#LastName").focusout(function () {
+            var lastName = $(this).val();
+            if (lastName.length <= 3) {
+                $("#errorMessageForLastName").show();
+            }
+            validate();
+        });
+        $("#LastName").focus(function () {
+            $("#errorMessageForLastName").hide();
+        });
+
+        function validateEmail($Email) {
+            var emailRegPattern = /^(([^<>()\[\]\.,;:\s@@\"]+(\.[^<>()\[\]\.,;:\s@@\"]+)*)|(\".+\"))@@(([^<>()[\]\.,;:\s@@\"]+\.)+[^<>()[\]\.,;:\s@@\"]{2,})$/;
+            return emailRegPattern.test($Email);
+        }
+
+        $("#Email").focusout(function () {
+            var email = $(this).val();
+            if (!validateEmail($("#Email").val())) {
+                $("#errorMessageForEmail").show();
+            }
+            validate();
+        });
+        $("#Email").focus(function () {
+            $("#errorMessageForEmail").hide();
+        });
+
+        $("#Password").focusout(function () {
+            var password = $(this).val();
+            if (password.length < 8) {
+                $("#errorMessageForPassword").show();
+            }
+            validate();
+        });
+        $("#Password").focus(function () {
+            $("#errorMessageForPassword").hide();
+        });
+
+        function validatePhone($PhoneNumber) {
+            var phoneNumberPattern = /^(?:(?:(?:00\s?|\+)40\s?|0)(?:7\d{2}\s?\d{3}\s?\d{3}|(21|31)\d{1}\s?\d{3}\s?\d{3}|((2|3)[3-7]\d{1})\s?\d{3}\s?\d{3}|(8|9)0\d{1}\s?\d{3}\s?\d{3}))$/; // US phone number validation:  /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/
+            return phoneNumberPattern.test($PhoneNumber);
+        }
+
+        $("#PhoneNumber").focusout(function () {
+            var phoneNumber = $(this).val();
+            if (!validatePhone($("#PhoneNumber").val())) {
+                $("#errorMessageForPhoneNumber").show();
+            }
+            validate();
+        });
+        $("#PhoneNumber").focus(function () {
+            $("#errorMessageForPhoneNumber").hide();
+        });
+
+        function validate() {
+
+            if (!$("#errorMessageForUserName").is(":visible") && $("#Username").val().length > 0 && !$("#errorMessageForFirstName").is(":visible") && $("#FirstName").val().length > 0 && !$("#errorMessageForLastName").is(":visible") && $("#LastName").val().length > 0 && !$("#errorMessageForEmail").is(":visible") && $("#Email").val().length > 0 && !$("#errorMessageForPassword").is(":visible") && $("#Password").val().length > 0 && !$("#errorMessageForPhoneNumber").is(":visible") && $("#PhoneNumber").val().length > 0) {
+                $(':input[type="submit"]').prop('disabled', false);
+            }
+            else {
+                $(':input[type="submit"]').prop('disabled', true);
+            }
+        }
+    </script>
+
+</body>
+</html>
